@@ -25,6 +25,7 @@ class App extends Component {
     this.handleChange = this.handleChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
     this.clickId = this.clickId.bind(this);
+    this.destoryHistory = this.destoryHistory.bind(this);
   }
 
   onEnd(event) {
@@ -58,6 +59,12 @@ class App extends Component {
 
     this.ids.unshift(id);
     localStorage.setItem("played_ids", JSON.stringify(this.ids));
+  }
+
+  destoryHistory() {
+    this.ids = [];
+    localStorage.setItem("played_ids", JSON.stringify(this.ids));
+    window.location.reload();
   }
 
   renderIdList(ids) {
@@ -105,7 +112,18 @@ class App extends Component {
               )}
             </div>
           </Grid.Column>
-          <Grid.Column width={3}>{this.renderIdList(this.ids)}</Grid.Column>
+          <Grid.Column width={3}>
+            <Header size="medium">Histories</Header>
+            {this.renderIdList(this.ids)}
+            {this.ids[0] && (
+              <div>
+                <Divider section />
+                <Button basic color="red" onClick={this.destoryHistory}>
+                  Destroy
+                </Button>
+              </div>
+            )}
+          </Grid.Column>
         </Grid>
       </Container>
     );
