@@ -64,7 +64,7 @@ class App extends Component {
   destoryHistory() {
     this.ids = [];
     localStorage.setItem("played_ids", JSON.stringify(this.ids));
-    window.location.reload();
+    this.setState({ videoId: "" });
   }
 
   renderIdList(ids) {
