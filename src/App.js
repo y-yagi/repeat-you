@@ -3,18 +3,6 @@ import { Container, Header, Icon, Divider, Grid, List, Form, Button } from 'sema
 import YoutubePlayer from 'react-youtube-player';
 import './App.css';
 
-class IdList extends Component {
-  render() {
-    const listIds = this.props.ids.map((id) =>
-      <List.Item key={id.toString()}>{id}</List.Item>
-    )
-
-    return (
-      <List>{listIds}</List>
-    )
-  }
-}
-
 class App extends Component {
   constructor(props) {
     super(props)
@@ -27,6 +15,7 @@ class App extends Component {
 
     this.handleChange = this.handleChange.bind(this)
     this.handleSubmit = this.handleSubmit.bind(this)
+    this.clickId = this.clickId.bind(this)
   }
 
   onEnd(event) {
@@ -44,6 +33,11 @@ class App extends Component {
     event.preventDefault()
   }
 
+  clickId(id, event) {
+    this.setState({videoId: id})
+    event.preventDefault()
+  }
+
   updateHistory(id) {
     if (this.ids.includes(id)) {
       return
@@ -55,6 +49,16 @@ class App extends Component {
 
     this.ids.unshift(id)
     localStorage.setItem('played_ids', JSON.stringify(this.ids))
+  }
+
+  renderIdList(ids) {
+    const listIds = ids.map((id) =>
+      <List.Item key={id.toString()} as='a' onClick={(e) => this.clickId(id, e)}>{id}</List.Item>
+    )
+
+    return (
+      <List>{listIds}</List>
+    )
   }
 
   render() {
@@ -91,7 +95,7 @@ class App extends Component {
             </div>
           </Grid.Column>
           <Grid.Column width={3}>
-            <IdList ids={this.ids} />
+            {this.renderIdList(this.ids)}
           </Grid.Column>
         </Grid>
       </Container>
