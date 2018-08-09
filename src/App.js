@@ -20,11 +20,13 @@ class App extends Component {
     super(props)
 
     this.ids = JSON.parse(localStorage.getItem('played_ids')) || []
-    this.state = {videoId: null}
-    this.handleChange = this.handleChange.bind(this)
-    this.handleSubmit = this.handleSubmit.bind(this)
+    this.state = {videoId: this.ids[0]}
+
     this.videoId = ''
     this.historyMax = 10
+
+    this.handleChange = this.handleChange.bind(this)
+    this.handleSubmit = this.handleSubmit.bind(this)
   }
 
   onEnd(event) {
