@@ -79,7 +79,7 @@ class App extends Component {
 
   render() {
     return (
-      <Container>
+      <Container className="app-container">
         <Header as="h2" icon textAlign="center" color="teal">
           <Icon name="play" />
           <Header.Content>YouTube Repeater</Header.Content>
