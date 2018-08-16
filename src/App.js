@@ -87,7 +87,11 @@ class App extends Component {
       </List.Item>
     ));
 
-    return <List>{listIds}</List>;
+    return (
+      <List divided verticalAlign="middle">
+        {listIds}
+      </List>
+    );
   }
 
   render() {
