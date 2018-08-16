@@ -61,16 +61,29 @@ class App extends Component {
     localStorage.setItem("played_ids", JSON.stringify(this.ids));
   }
 
-  destoryHistory() {
-    this.ids = [];
+  destoryHistory(id, event) {
+    const index = this.ids.indexOf(id);
+    if (index === -1) {
+      return;
+    }
+
+    this.ids.splice(index, 1);
     localStorage.setItem("played_ids", JSON.stringify(this.ids));
     this.setState({ videoId: "" });
+    event.preventDefault();
   }
 
   renderIdList(ids) {
     const listIds = ids.map(id => (
-      <List.Item key={id.toString()} as="a" onClick={e => this.clickId(id, e)}>
-        {id}
+      <List.Item key={id.toString()}>
+        <List.Content floated="right">
+          <Button basic color="red" onClick={e => this.destoryHistory(id, e)}>
+            Destroy
+          </Button>
+        </List.Content>
+        <List.Content floated="left" as="a" onClick={e => this.clickId(id, e)}>
+          {id}
+        </List.Content>
       </List.Item>
     ));
 
@@ -112,17 +125,9 @@ class App extends Component {
               )}
             </div>
           </Grid.Column>
-          <Grid.Column width={3}>
+          <Grid.Column width={4}>
             <Header size="medium">Histories</Header>
             {this.renderIdList(this.ids)}
-            {this.ids[0] && (
-              <div>
-                <Divider section />
-                <Button basic color="red" onClick={this.destoryHistory}>
-                  Destroy
-                </Button>
-              </div>
-            )}
           </Grid.Column>
         </Grid>
       </Container>
