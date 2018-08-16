@@ -22,18 +22,18 @@ class App extends Component {
     this.videoId = "";
     this.historyMax = 10;
 
-    this.handleChange = this.handleChange.bind(this);
+    this.handleChangeFormValue = this.handleChangeFormValue.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
-    this.clickId = this.clickId.bind(this);
-    this.destoryHistory = this.destoryHistory.bind(this);
+    this.handleClickId = this.handleClickId.bind(this);
+    this.handleDestoryHistory = this.handleDestoryHistory.bind(this);
   }
 
-  onEnd(event) {
+  onVideoEnd(event) {
     event.target.seekTo(0, true);
     event.target.playVideo();
   }
 
-  handleChange(event) {
+  handleChangeFormValue(event) {
     this.videoId = event.target.value;
   }
 
@@ -43,7 +43,7 @@ class App extends Component {
     event.preventDefault();
   }
 
-  clickId(id, event) {
+  handleClickId(id, event) {
     this.setState({ videoId: id });
     event.preventDefault();
   }
@@ -61,7 +61,7 @@ class App extends Component {
     localStorage.setItem("played_ids", JSON.stringify(this.ids));
   }
 
-  destoryHistory(id, event) {
+  handleDestoryHistory(id, event) {
     const index = this.ids.indexOf(id);
     if (index === -1) {
       return;
@@ -77,11 +77,11 @@ class App extends Component {
     const listIds = ids.map(id => (
       <List.Item key={id.toString()}>
         <List.Content floated="right">
-          <Button basic color="red" onClick={e => this.destoryHistory(id, e)}>
+          <Button basic color="red" onClick={e => this.handleDestoryHistory(id, e)}>
             Destroy
           </Button>
         </List.Content>
-        <List.Content floated="left" as="a" onClick={e => this.clickId(id, e)}>
+        <List.Content floated="left" as="a" onClick={e => this.handleClickId(id, e)}>
           {id}
         </List.Content>
       </List.Item>
@@ -106,7 +106,7 @@ class App extends Component {
           <Form.Field>
             <input
               placeholder="video ID"
-              onChange={this.handleChange}
+              onChange={this.handleChangeFormValue}
               required="true"
             />
           </Form.Field>
@@ -120,7 +120,7 @@ class App extends Component {
                 <YoutubePlayer
                   videoId={this.state.videoId}
                   playbackState="playing"
-                  onEnd={this.onEnd}
+                  onEnd={this.onVideoEnd}
                   configuration={{
                     autoplay: 1,
                     showinfo: 0
@@ -130,7 +130,7 @@ class App extends Component {
             </div>
           </Grid.Column>
           <Grid.Column width={4}>
-            <Header size="medium">Histories</Header>
+            <Header size="medium">History</Header>
             {this.renderIdList(this.ids)}
           </Grid.Column>
         </Grid>
