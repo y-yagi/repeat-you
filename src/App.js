@@ -39,16 +39,20 @@ class App extends Component {
 
   handleSubmit(event) {
     this.setState({ videoId: this.videoId });
-    this.updateHistory(this.videoId);
+    this.addToHistory(this.videoId);
     event.preventDefault();
   }
 
   handleClickId(id, event) {
+    this.ids.splice(this.ids.indexOf(id), 1);
+    this.ids.unshift(id);
+    localStorage.setItem("played_ids", JSON.stringify(this.ids));
+
     this.setState({ videoId: id });
     event.preventDefault();
   }
 
-  updateHistory(id) {
+  addToHistory(id) {
     if (this.ids.includes(id)) {
       return;
     }
