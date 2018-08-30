@@ -20,7 +20,7 @@ class App extends Component {
     this.state = { videoId: this.ids[0] };
 
     this.videoId = "";
-    this.historyMax = 10;
+    this.historyMax = 20;
 
     this.handleChangeFormValue = this.handleChangeFormValue.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
