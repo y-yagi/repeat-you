@@ -143,6 +143,7 @@ class App extends Component {
     const listIds = ids.map(id => (
       <List.Item key={id.toString()}>
         {showOrEditId(id)}
+        <hidden value={id} name="id" />
         <List.Content floated="right">
           <Button basic color="blue" onClick={e => this.handleEditName(id, e)}>
             Edit
