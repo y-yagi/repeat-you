@@ -143,7 +143,7 @@ class App extends Component {
     const listIds = ids.map(id => (
       <List.Item key={id.toString()}>
         {showOrEditId(id)}
-        <hidden value={id} name="id" />
+        <input name="id" value={id} type="hidden" />
         <List.Content floated="right">
           <Button basic color="blue" onClick={e => this.handleEditName(id, e)}>
             Edit
@@ -179,7 +179,7 @@ class App extends Component {
             <input
               placeholder="video ID"
               onChange={this.handleChangeFormValue}
-              required="true"
+              required={true}
             />
           </Form.Field>
           <Button type="submit">Play</Button>
