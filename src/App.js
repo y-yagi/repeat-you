@@ -179,7 +179,7 @@ class App extends Component {
             <input
               placeholder="video ID"
               onChange={this.handleChangeFormValue}
-              required="true"
+              required={true}
             />
           </Form.Field>
           <Button type="submit">Play</Button>
