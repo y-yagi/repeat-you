@@ -8,7 +8,7 @@ import {
   List,
   Form,
   Button,
-  Input
+  Input,
 } from "semantic-ui-react";
 import YoutubePlayer from "react-youtube-player";
 import "./App.css";
@@ -118,13 +118,13 @@ class App extends Component {
   }
 
   renderIdList(ids) {
-    const showOrEditId = id => {
+    const showOrEditId = (id) => {
       if (id === this.state.editingId) {
         return (
           <Input
             size="mini"
             defaultValue={this.videoName(id)}
-            onKeyPress={e => this.handleSaveName(id, e)}
+            onKeyPress={(e) => this.handleSaveName(id, e)}
           />
         );
       } else {
@@ -132,7 +132,7 @@ class App extends Component {
           <List.Content
             floated="left"
             as="a"
-            onClick={e => this.handleClickId(id, e)}
+            onClick={(e) => this.handleClickId(id, e)}
           >
             {this.videoName(id)}
           </List.Content>
@@ -140,18 +140,22 @@ class App extends Component {
       }
     };
 
-    const listIds = ids.map(id => (
+    const listIds = ids.map((id) => (
       <List.Item key={id.toString()}>
         {showOrEditId(id)}
         <input name="id" value={id} type="hidden" />
         <List.Content floated="right">
-          <Button basic color="blue" onClick={e => this.handleEditName(id, e)}>
+          <Button
+            basic
+            color="blue"
+            onClick={(e) => this.handleEditName(id, e)}
+          >
             Edit
           </Button>
           <Button
             basic
             color="red"
-            onClick={e => this.handleDestoryHistory(id, e)}
+            onClick={(e) => this.handleDestoryHistory(id, e)}
           >
             Destroy
           </Button>
@@ -195,7 +199,7 @@ class App extends Component {
                   onEnd={this.onVideoEnd}
                   configuration={{
                     autoplay: 1,
-                    showinfo: 0
+                    showinfo: 0,
                   }}
                 />
               )}
