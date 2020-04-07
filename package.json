@@ -18,7 +18,7 @@
     "pretty": "yarn prettier src/*.css src/*.js --write"
   },
   "devDependencies": {
-    "prettier": "2.0.3"
+    "prettier": "2.0.4"
   },
   "browserslist": {
     "production": [
