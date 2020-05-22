@@ -154,6 +154,16 @@ class App extends Component {
           </Button>
           <Button
             basic
+            color="green"
+            as="a"
+            href={`https://www.youtube.com/watch?v=${id}`}
+            target="_blank"
+            rel="noreferrer noopener"
+          >
+            Goto
+          </Button>
+          <Button
+            basic
             color="red"
             onClick={(e) => this.handleDestoryHistory(id, e)}
           >
