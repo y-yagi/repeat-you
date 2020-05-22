@@ -14,11 +14,16 @@ import YoutubePlayer from "react-youtube-player";
 import "./App.css";
 
 class App extends Component {
+  ids: any;
+  videos: any;
+  videoId: string;
+  historyMax: number;
+
   constructor(props) {
     super(props);
 
-    this.ids = JSON.parse(localStorage.getItem("played_ids")) || [];
-    this.videos = JSON.parse(localStorage.getItem("videos")) || {};
+    this.ids = JSON.parse(localStorage.getItem("played_ids") || "") || [];
+    this.videos = JSON.parse(localStorage.getItem("videos") || "") || {};
     this.state = { videoId: this.ids[0], editingId: "" };
 
     this.videoId = "";
@@ -119,7 +124,7 @@ class App extends Component {
 
   renderIdList(ids) {
     const showOrEditId = (id) => {
-      if (id === this.state.editingId) {
+      if (id === (this.state as any).editingId) {
         return (
           <Input
             size="mini"
@@ -202,9 +207,9 @@ class App extends Component {
         <Grid>
           <Grid.Column width={11}>
             <div className="ui embed">
-              {this.state.videoId && (
+              {(this.state as any).videoId && (
                 <YoutubePlayer
-                  videoId={this.state.videoId}
+                  videoId={(this.state as any).videoId}
                   playbackState="playing"
                   onEnd={this.onVideoEnd}
                   configuration={{
