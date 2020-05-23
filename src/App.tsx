@@ -22,8 +22,8 @@ class App extends Component {
   constructor(props) {
     super(props);
 
-    this.ids = JSON.parse(localStorage.getItem("played_ids") || "") || [];
-    this.videos = JSON.parse(localStorage.getItem("videos") || "") || {};
+    this.ids = JSON.parse(localStorage.getItem("played_ids") || "[]") || [];
+    this.videos = JSON.parse(localStorage.getItem("videos") || "[]") || {};
     this.state = { videoId: this.ids[0], editingId: "" };
 
     this.videoId = "";
