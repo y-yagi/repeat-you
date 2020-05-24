@@ -10,7 +10,7 @@ import {
   Button,
   Input,
 } from "semantic-ui-react";
-import YoutubePlayer from "react-youtube-player";
+import Youtube from "react-youtube";
 import "./App.css";
 
 class App extends Component {
@@ -208,14 +208,10 @@ class App extends Component {
           <Grid.Column width={11}>
             <div className="ui embed">
               {(this.state as any).videoId && (
-                <YoutubePlayer
+                <Youtube
                   videoId={(this.state as any).videoId}
-                  playbackState="playing"
                   onEnd={this.onVideoEnd}
-                  configuration={{
-                    autoplay: 1,
-                    showinfo: 0,
-                  }}
+                  opts={{playerVars: { autoplay: 1, showinfo: 0}}}
                 />
               )}
             </div>
