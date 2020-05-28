@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React, { useState } from "react";
 import {
   Container,
   Header,
@@ -13,90 +13,77 @@ import {
 import Youtube from "react-youtube";
 import "./App.css";
 
-class App extends Component {
-  ids: any;
-  videos: any;
-  videoId: string;
-  historyMax: number;
+interface Props {}
 
-  constructor(props) {
-    super(props);
+function App(props: Props) {
+  const ids = JSON.parse(localStorage.getItem("played_ids") || "[]") || [];
+  const videos = JSON.parse(localStorage.getItem("videos") || "{}") || {};
+  const historyMax = 20;
 
-    this.ids = JSON.parse(localStorage.getItem("played_ids") || "[]") || [];
-    this.videos = JSON.parse(localStorage.getItem("videos") || "[]") || {};
-    this.state = { videoId: this.ids[0], editingId: "" };
+  const [videoId, setVideoId] = useState(ids[0])
+  const [editingId, setEditingId] = useState("")
 
-    this.videoId = "";
-    this.historyMax = 20;
+  let newVideoId = ""
 
-    this.handleChangeFormValue = this.handleChangeFormValue.bind(this);
-    this.handleSubmit = this.handleSubmit.bind(this);
-    this.handleClickId = this.handleClickId.bind(this);
-    this.handleDestoryHistory = this.handleDestoryHistory.bind(this);
-    this.handleEditName = this.handleEditName.bind(this);
-    this.handleSaveName = this.handleSaveName.bind(this);
-    this.videoName = this.videoName.bind(this);
-  }
-
-  onVideoEnd(event) {
+  function onVideoEnd(event) {
     event.target.seekTo(0, true);
     event.target.playVideo();
   }
 
-  handleChangeFormValue(event) {
-    this.videoId = event.target.value;
+  function handleChangeFormValue(event) {
+    newVideoId = event.target.value
   }
 
-  handleSubmit(event) {
-    this.setState({ videoId: this.videoId });
-    this.addToHistory(this.videoId);
+  function handleSubmit(event) {
+    setVideoId(newVideoId);
+    addToHistory(newVideoId);
     event.preventDefault();
   }
 
-  handleClickId(id, event) {
-    this.ids.splice(this.ids.indexOf(id), 1);
-    this.ids.unshift(id);
-    localStorage.setItem("played_ids", JSON.stringify(this.ids));
+  function handleClickId(id, event) {
+    ids.splice(ids.indexOf(id), 1);
+    ids.unshift(id);
+    localStorage.setItem("played_ids", JSON.stringify(ids));
 
-    this.setState({ videoId: id });
+    setVideoId(id)
     event.preventDefault();
   }
 
-  addToHistory(id) {
-    if (this.ids.includes(id)) {
+  function addToHistory(id) {
+    if (ids.includes(id)) {
       return;
     }
 
-    if (this.ids.length >= this.historyMax) {
-      this.ids.pop();
+    if (ids.length >= historyMax) {
+      ids.pop();
     }
 
-    this.ids.unshift(id);
-    localStorage.setItem("played_ids", JSON.stringify(this.ids));
+    ids.unshift(id);
+    localStorage.setItem("played_ids", JSON.stringify(ids));
   }
 
-  handleDestoryHistory(id, event) {
-    const index = this.ids.indexOf(id);
+  function handleDestoryHistory(id, event) {
+    const index = ids.indexOf(id);
     if (index === -1) {
       return;
     }
 
-    this.ids.splice(index, 1);
-    localStorage.setItem("played_ids", JSON.stringify(this.ids));
-    delete this.videos[id];
-    localStorage.setItem("videos", JSON.stringify(this.videos));
-    this.setState({ videoId: "" });
+    ids.splice(index, 1);
+    localStorage.setItem("played_ids", JSON.stringify(ids));
+    delete videos[id];
+    localStorage.setItem("videos", JSON.stringify(videos));
+    setVideoId("")
     event.preventDefault();
   }
 
-  handleEditName(id, event) {
-    this.setState({ editingId: id });
+  function handleEditName(id, event) {
+    setEditingId(id)
     event.preventDefault();
   }
 
-  handleSaveName(id, event) {
+  function handleSaveName(id, event) {
     if (event.key === "Escape") {
-      this.setState({ editingId: "" });
+      setEditingId("")
       return;
     }
 
@@ -104,16 +91,16 @@ class App extends Component {
       return;
     }
 
-    delete this.videos[id];
-    this.videos[id] = event.target.value;
-    localStorage.setItem("videos", JSON.stringify(this.videos));
+    delete videos[id];
+    videos[id] = event.target.value;
+    localStorage.setItem("videos", JSON.stringify(videos));
 
-    this.setState({ editingId: "" });
+    setEditingId("")
     event.preventDefault();
   }
 
-  videoName(id) {
-    const name = this.videos[id];
+  function videoName(id) {
+    const name = videos[id];
 
     if (name === undefined) {
       return id;
@@ -122,14 +109,14 @@ class App extends Component {
     }
   }
 
-  renderIdList(ids) {
+  function renderIdList(ids) {
     const showOrEditId = (id) => {
-      if (id === (this.state as any).editingId) {
+      if (id === editingId) {
         return (
           <Input
             size="mini"
-            defaultValue={this.videoName(id)}
-            onKeyPress={(e) => this.handleSaveName(id, e)}
+            defaultValue={videoName(id)}
+            onKeyPress={(e) => handleSaveName(id, e)}
           />
         );
       } else {
@@ -137,9 +124,9 @@ class App extends Component {
           <List.Content
             floated="left"
             as="a"
-            onClick={(e) => this.handleClickId(id, e)}
+            onClick={(e) => handleClickId(id, e)}
           >
-            {this.videoName(id)}
+            {videoName(id)}
           </List.Content>
         );
       }
@@ -153,7 +140,7 @@ class App extends Component {
           <Button
             basic
             color="blue"
-            onClick={(e) => this.handleEditName(id, e)}
+            onClick={(e) => handleEditName(id, e)}
           >
             Edit
           </Button>
@@ -170,7 +157,7 @@ class App extends Component {
           <Button
             basic
             color="red"
-            onClick={(e) => this.handleDestoryHistory(id, e)}
+            onClick={(e) => handleDestoryHistory(id, e)}
           >
             Destroy
           </Button>
@@ -185,7 +172,6 @@ class App extends Component {
     );
   }
 
-  render() {
     return (
       <Container className="app-container">
         <Header as="h2" icon textAlign="center" color="teal">
@@ -193,11 +179,11 @@ class App extends Component {
           <Header.Content>YouTube Repeater</Header.Content>
         </Header>
         <Divider hidden section />
-        <Form onSubmit={this.handleSubmit}>
+        <Form onSubmit={handleSubmit}>
           <Form.Field>
             <input
               placeholder="video ID"
-              onChange={this.handleChangeFormValue}
+              onChange={handleChangeFormValue}
               required={true}
             />
           </Form.Field>
@@ -207,10 +193,10 @@ class App extends Component {
         <Grid>
           <Grid.Column width={11}>
             <div className="ui embed">
-              {(this.state as any).videoId && (
+              {videoId && (
                 <Youtube
-                  videoId={(this.state as any).videoId}
-                  onEnd={this.onVideoEnd}
+                  videoId={videoId}
+                  onEnd={onVideoEnd}
                   opts={{playerVars: { autoplay: 1, showinfo: 0}}}
                 />
               )}
@@ -218,12 +204,11 @@ class App extends Component {
           </Grid.Column>
           <Grid.Column width={5}>
             <Header size="medium">History</Header>
-            {this.renderIdList(this.ids)}
+            {renderIdList(ids)}
           </Grid.Column>
         </Grid>
       </Container>
     );
-  }
 }
 
 export default App;
