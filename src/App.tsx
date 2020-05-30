@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Container,
   Header,
@@ -11,6 +11,7 @@ import {
   Input,
 } from "semantic-ui-react";
 import Youtube from "react-youtube";
+import YouTubePlayer from "youtube-player"
 import "./App.css";
 
 interface Props {}
@@ -24,10 +25,22 @@ function App(props: Props) {
   const [editingId, setEditingId] = useState("")
 
   let newVideoId = ""
+  let player: YouTubePlayer;
+
+  useEffect(() => {
+    document.addEventListener('keydown', handleKeyPress);
+    return () => {
+      document.removeEventListener('keydown', handleKeyPress);
+    };
+  })
 
   function onVideoEnd(event) {
     event.target.seekTo(0, true);
     event.target.playVideo();
+  }
+
+  function onVideoReady(event) {
+    player = event.target;
   }
 
   function handleChangeFormValue(event) {
@@ -106,6 +119,17 @@ function App(props: Props) {
       return id;
     } else {
       return name;
+    }
+  }
+
+  function handleKeyPress(e) {
+    if (e.code === "Space") {
+      // 1: Playing
+      if (player?.getPlayerState() === 1) {
+        player?.pauseVideo();
+      } else {
+        player?.playVideo();
+      }
     }
   }
 
@@ -197,6 +221,7 @@ function App(props: Props) {
                 <Youtube
                   videoId={videoId}
                   onEnd={onVideoEnd}
+                  onReady={onVideoReady}
                   opts={{playerVars: { autoplay: 1, showinfo: 0}}}
                 />
               )}
