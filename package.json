@@ -9,7 +9,7 @@
     "react-youtube": "^7.11.2",
     "semantic-ui-css": ">=2.3.3",
     "semantic-ui-react": ">=0.88.2",
-    "typescript": "~3.9.6"
+    "typescript": "~3.9.7"
   },
   "scripts": {
     "start": "react-scripts start",
