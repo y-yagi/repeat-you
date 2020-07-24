@@ -8605,10 +8605,10 @@ react-scripts@>=3.4.1:
   optionalDependencies:
     fsevents "2.1.2"
 
-react-youtube@^7.11.2:
-  version "7.11.2"
-  resolved "https://registry.yarnpkg.com/react-youtube/-/react-youtube-7.11.2.tgz#f6b4078db8479101811208ca09f1618c84824613"
-  integrity sha512-QOrk5Wr1m9/AmWMftyn1p5nPq1GMiWdB6IYn1hT+0czyy5xV9jtKVlsBqsscY6WZrokko868VUJM9yn6GhsD7g==
+react-youtube@^7.11.3:
+  version "7.11.3"
+  resolved "https://registry.yarnpkg.com/react-youtube/-/react-youtube-7.11.3.tgz#a23d1f830b9c3abf5f56ea418b7fbd5de9195559"
+  integrity sha512-BNd+eGoYY4e4cgY1UYaLmeqnyfCtzPB1GM4w6Dy4KyGYvFmh0naOEvzwD3lW0r1hgO2uTkBJtpjBefuAOPlGlg==
   dependencies:
     fast-deep-equal "3.1.1"
     prop-types "15.7.2"
