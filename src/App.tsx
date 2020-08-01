@@ -12,6 +12,7 @@ import {
 } from "semantic-ui-react";
 import Youtube from "react-youtube";
 import YouTubePlayer from "youtube-player"
+import RepeatForm from "./RepeatForm";
 import "./App.css";
 
 interface Props {}
@@ -24,7 +25,6 @@ function App(props: Props) {
   const [videoId, setVideoId] = useState(ids[0])
   const [editingId, setEditingId] = useState("")
 
-  let newVideoId = ""
   let player: YouTubePlayer;
 
   useEffect(() => {
@@ -43,14 +43,9 @@ function App(props: Props) {
     player = event.target;
   }
 
-  function handleChangeFormValue(event) {
-    newVideoId = event.target.value
-  }
-
-  function handleSubmit(event) {
-    setVideoId(newVideoId);
-    addToHistory(newVideoId);
-    event.preventDefault();
+  function handleSubmit(values) {
+    addToHistory(values["videoId"]);
+    setVideoId(values["videoId"]);
   }
 
   function handleClickId(id, event) {
@@ -203,16 +198,7 @@ function App(props: Props) {
           <Header.Content>YouTube Repeater</Header.Content>
         </Header>
         <Divider hidden section />
-        <Form onSubmit={handleSubmit}>
-          <Form.Field>
-            <input
-              placeholder="video ID"
-              onChange={handleChangeFormValue}
-              required={true}
-            />
-          </Form.Field>
-          <Button type="submit">Play</Button>
-        </Form>
+        {RepeatForm(handleSubmit)}
         <Divider hidden section />
         <Grid>
           <Grid.Column width={11}>
