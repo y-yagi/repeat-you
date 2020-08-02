@@ -6,12 +6,12 @@ import {
   Divider,
   Grid,
   List,
-  Form,
   Button,
   Input,
 } from "semantic-ui-react";
 import Youtube from "react-youtube";
-import YouTubePlayer from "youtube-player"
+import YouTubePlayer from "youtube-player";
+import RepeatForm from "./RepeatForm";
 import "./App.css";
 
 interface Props {}
@@ -21,18 +21,17 @@ function App(props: Props) {
   const videos = JSON.parse(localStorage.getItem("videos") || "{}") || {};
   const historyMax = 20;
 
-  const [videoId, setVideoId] = useState(ids[0])
-  const [editingId, setEditingId] = useState("")
+  const [videoId, setVideoId] = useState(ids[0]);
+  const [editingId, setEditingId] = useState("");
 
-  let newVideoId = ""
   let player: YouTubePlayer;
 
   useEffect(() => {
-    document.addEventListener('keydown', handleKeyPress);
+    document.addEventListener("keydown", handleKeyPress);
     return () => {
-      document.removeEventListener('keydown', handleKeyPress);
+      document.removeEventListener("keydown", handleKeyPress);
     };
-  })
+  });
 
   function onVideoEnd(event) {
     event.target.seekTo(0, true);
@@ -43,14 +42,9 @@ function App(props: Props) {
     player = event.target;
   }
 
-  function handleChangeFormValue(event) {
-    newVideoId = event.target.value
-  }
-
-  function handleSubmit(event) {
-    setVideoId(newVideoId);
-    addToHistory(newVideoId);
-    event.preventDefault();
+  function handleSubmit(values) {
+    addToHistory(values["videoId"]);
+    setVideoId(values["videoId"]);
   }
 
   function handleClickId(id, event) {
@@ -58,7 +52,7 @@ function App(props: Props) {
     ids.unshift(id);
     localStorage.setItem("played_ids", JSON.stringify(ids));
 
-    setVideoId(id)
+    setVideoId(id);
     event.preventDefault();
   }
 
@@ -85,18 +79,18 @@ function App(props: Props) {
     localStorage.setItem("played_ids", JSON.stringify(ids));
     delete videos[id];
     localStorage.setItem("videos", JSON.stringify(videos));
-    setVideoId("")
+    setVideoId("");
     event.preventDefault();
   }
 
   function handleEditName(id, event) {
-    setEditingId(id)
+    setEditingId(id);
     event.preventDefault();
   }
 
   function handleSaveName(id, event) {
     if (event.key === "Escape") {
-      setEditingId("")
+      setEditingId("");
       return;
     }
 
@@ -108,7 +102,7 @@ function App(props: Props) {
     videos[id] = event.target.value;
     localStorage.setItem("videos", JSON.stringify(videos));
 
-    setEditingId("")
+    setEditingId("");
     event.preventDefault();
   }
 
@@ -161,11 +155,7 @@ function App(props: Props) {
         {showOrEditId(id)}
         <input name="id" value={id} type="hidden" />
         <List.Content floated="right">
-          <Button
-            basic
-            color="blue"
-            onClick={(e) => handleEditName(id, e)}
-          >
+          <Button basic color="blue" onClick={(e) => handleEditName(id, e)}>
             Edit
           </Button>
           <Button
@@ -196,44 +186,35 @@ function App(props: Props) {
     );
   }
 
-    return (
-      <Container className="app-container">
-        <Header as="h2" icon textAlign="center" color="teal">
-          <Icon name="play" />
-          <Header.Content>YouTube Repeater</Header.Content>
-        </Header>
-        <Divider hidden section />
-        <Form onSubmit={handleSubmit}>
-          <Form.Field>
-            <input
-              placeholder="video ID"
-              onChange={handleChangeFormValue}
-              required={true}
-            />
-          </Form.Field>
-          <Button type="submit">Play</Button>
-        </Form>
-        <Divider hidden section />
-        <Grid>
-          <Grid.Column width={11}>
-            <div className="ui embed">
-              {videoId && (
-                <Youtube
-                  videoId={videoId}
-                  onEnd={onVideoEnd}
-                  onReady={onVideoReady}
-                  opts={{playerVars: { autoplay: 1, showinfo: 0}}}
-                />
-              )}
-            </div>
-          </Grid.Column>
-          <Grid.Column width={5}>
-            <Header size="medium">History</Header>
-            {renderIdList(ids)}
-          </Grid.Column>
-        </Grid>
-      </Container>
-    );
+  return (
+    <Container className="app-container">
+      <Header as="h2" icon textAlign="center" color="teal">
+        <Icon name="play" />
+        <Header.Content>YouTube Repeater</Header.Content>
+      </Header>
+      <Divider hidden section />
+      {RepeatForm(handleSubmit)}
+      <Divider hidden section />
+      <Grid>
+        <Grid.Column width={11}>
+          <div className="ui embed">
+            {videoId && (
+              <Youtube
+                videoId={videoId}
+                onEnd={onVideoEnd}
+                onReady={onVideoReady}
+                opts={{ playerVars: { autoplay: 1, showinfo: 0 } }}
+              />
+            )}
+          </div>
+        </Grid.Column>
+        <Grid.Column width={5}>
+          <Header size="medium">History</Header>
+          {renderIdList(ids)}
+        </Grid.Column>
+      </Grid>
+    </Container>
+  );
 }
 
 export default App;
