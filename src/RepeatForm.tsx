@@ -13,7 +13,6 @@ const RepeatForm = (callback) => (
       values,
       handleChange,
       handleSubmit,
-      isSubmitting,
       /* and other goodies */
     }) => (
       <Form onSubmit={handleSubmit}>
@@ -26,9 +25,7 @@ const RepeatForm = (callback) => (
             required={true}
           />
         </Form.Field>
-        <Button type="submit" disabled={isSubmitting}>
-          Play
-        </Button>
+        <Button type="submit">Play</Button>
       </Form>
     )}
   </Formik>
