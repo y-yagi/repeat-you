@@ -6,7 +6,7 @@
     "formik": "^2.2.5",
     "react": ">=16.14.0",
     "react-dom": ">=16.14.0",
-    "react-scripts": ">=4.0.0",
+    "react-scripts": ">=4.0.1",
     "react-youtube": "^7.13.0",
     "semantic-ui-css": ">=2.3.3",
     "semantic-ui-react": ">=2.0.1",
