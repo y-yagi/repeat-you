@@ -20,7 +20,7 @@
     "pretty": "yarn prettier src/*.css src/*.js src/*.tsx --write"
   },
   "devDependencies": {
-    "@types/node": "^15.6.1",
+    "@types/node": "^15.12.0",
     "@types/react": "^17.0.9",
     "@types/react-dom": "^17.0.5",
     "prettier": "2.3.0"
