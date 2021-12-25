@@ -1,5 +1,5 @@
 import type { NextPage } from "next";
-import { useEffect, useState, useCallback } from "react";
+import { useEffect, useState, useCallback, SyntheticEvent } from "react";
 import Youtube from "react-youtube";
 import {
   Container,
@@ -31,7 +31,7 @@ const Home: NextPage = () => {
         player?.playVideo();
       }
     }
-  }, [])
+  }, []);
 
   useEffect(() => {
     const ids = JSON.parse(window.localStorage.getItem("played_ids") || "[]");
@@ -46,16 +46,16 @@ const Home: NextPage = () => {
   const onVideoEnd = (event: { target: YouTubePlayer }) => {
     event.target.seekTo(0, true);
     event.target.playVideo();
-  }
+  };
 
   const onVideoReady = (event: { target: YouTubePlayer }) => {
     player = event.target;
-  }
+  };
 
   const handleSubmit = (videoId: string) => {
     addToHistory(videoId);
     setVideoId(videoId);
-  }
+  };
 
   const handleClickId = (id: string, event: MouseEvent) => {
     const ids = JSON.parse(window.localStorage.getItem("played_ids") || "[]");
@@ -66,7 +66,7 @@ const Home: NextPage = () => {
 
     setVideoId(id);
     event.preventDefault();
-  }
+  };
 
   const addToHistory = (id: string) => {
     const ids = JSON.parse(window.localStorage.getItem("played_ids") || "[]");
@@ -81,9 +81,9 @@ const Home: NextPage = () => {
 
     ids.unshift(id);
     window.localStorage.setItem("played_ids", JSON.stringify(ids));
-  }
+  };
 
-  const handleDestoryHistory = (id: string, event: MouseEvent) => {
+  const handleDestoryHistory = (id: string, event: SyntheticEvent) => {
     const ids = JSON.parse(window.localStorage.getItem("played_ids") || "[]");
     const videos = JSON.parse(localStorage.getItem("videos") || "{}") || {};
 
@@ -98,12 +98,12 @@ const Home: NextPage = () => {
     window.localStorage.setItem("videos", JSON.stringify(videos));
     setVideoId("");
     event.preventDefault();
-  }
+  };
 
-  const handleEditName = (id: string, event: MouseEvent) => {
+  const handleEditName = (id: string, event: SyntheticEvent) => {
     setEditingId(id);
     event.preventDefault();
-  }
+  };
 
   const handleSaveName = (id: string, event: any) => {
     if (event.key === "Escape") {
@@ -122,7 +122,7 @@ const Home: NextPage = () => {
 
     setEditingId("");
     event.preventDefault();
-  }
+  };
 
   const videoName = (id: string) => {
     const videos = JSON.parse(localStorage.getItem("videos") || "{}") || {};
@@ -133,7 +133,7 @@ const Home: NextPage = () => {
     } else {
       return name;
     }
-  }
+  };
 
   const renderIdList = () => {
     if (typeof window === "undefined") {
@@ -198,7 +198,7 @@ const Home: NextPage = () => {
         {listIds}
       </List>
     );
-  }
+  };
 
   return (
     <Container className="app-container">
