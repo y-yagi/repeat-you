@@ -2,19 +2,14 @@ import React from "react";
 import { Formik } from "formik";
 import { Form, Button } from "semantic-ui-react";
 
-const RepeatForm = (callback) => (
+const RepeatForm = (callback: any) => (
   <Formik
     initialValues={{ videoId: "" }}
     onSubmit={(values, { setSubmitting }) => {
       callback(values);
     }}
   >
-    {({
-      values,
-      handleChange,
-      handleSubmit,
-      /* and other goodies */
-    }) => (
+    {({ values, handleChange, handleSubmit }) => (
       <Form onSubmit={handleSubmit}>
         <Form.Field>
           <input

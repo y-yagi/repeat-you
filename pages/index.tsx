@@ -1,4 +1,7 @@
-import React, { useEffect, useState } from "react";
+import type { NextPage } from "next";
+import { useEffect, useState } from "react";
+import Youtube from "react-youtube";
+import YouTubePlayer from "youtube-player";
 import {
   Container,
   Header,
@@ -9,54 +12,54 @@ import {
   Button,
   Input,
 } from "semantic-ui-react";
-import Youtube from "react-youtube";
-import YouTubePlayer from "youtube-player";
-import RepeatForm from "./RepeatForm";
-import "./App.css";
+import RepeatForm from "../components/repeat-form";
 
-interface Props {}
-
-function App(props: Props) {
-  const ids = JSON.parse(localStorage.getItem("played_ids") || "[]") || [];
-  const videos = JSON.parse(localStorage.getItem("videos") || "{}") || {};
+const Home: NextPage = () => {
   const historyMax = 20;
 
-  const [videoId, setVideoId] = useState(ids[0]);
+  const [videoId, setVideoId] = useState("");
   const [editingId, setEditingId] = useState("");
 
-  let player: YouTubePlayer;
+  let player: any;
 
   useEffect(() => {
+    const ids = JSON.parse(window.localStorage.getItem("played_ids") || "[]");
+    setVideoId(ids[0]);
+
     document.addEventListener("keydown", handleKeyPress);
     return () => {
       document.removeEventListener("keydown", handleKeyPress);
     };
-  });
+  }, [handleKeyPress]);
 
-  function onVideoEnd(event) {
+  function onVideoEnd(event: any) {
     event.target.seekTo(0, true);
     event.target.playVideo();
   }
 
-  function onVideoReady(event) {
+  function onVideoReady(event: any) {
     player = event.target;
   }
 
-  function handleSubmit(values) {
+  function handleSubmit(values: any) {
     addToHistory(values["videoId"]);
     setVideoId(values["videoId"]);
   }
 
-  function handleClickId(id, event) {
+  function handleClickId(id: any, event: any) {
+    const ids = JSON.parse(window.localStorage.getItem("played_ids") || "[]");
+
     ids.splice(ids.indexOf(id), 1);
     ids.unshift(id);
-    localStorage.setItem("played_ids", JSON.stringify(ids));
+    window.localStorage.setItem("played_ids", JSON.stringify(ids));
 
     setVideoId(id);
     event.preventDefault();
   }
 
-  function addToHistory(id) {
+  function addToHistory(id: any) {
+    const ids = JSON.parse(window.localStorage.getItem("played_ids") || "[]");
+
     if (ids.includes(id)) {
       return;
     }
@@ -66,29 +69,32 @@ function App(props: Props) {
     }
 
     ids.unshift(id);
-    localStorage.setItem("played_ids", JSON.stringify(ids));
+    window.localStorage.setItem("played_ids", JSON.stringify(ids));
   }
 
-  function handleDestoryHistory(id, event) {
+  function handleDestoryHistory(id: any, event: any) {
+    const ids = JSON.parse(window.localStorage.getItem("played_ids") || "[]");
+    const videos = JSON.parse(localStorage.getItem("videos") || "{}") || {};
+
     const index = ids.indexOf(id);
     if (index === -1) {
       return;
     }
 
     ids.splice(index, 1);
-    localStorage.setItem("played_ids", JSON.stringify(ids));
+    window.localStorage.setItem("played_ids", JSON.stringify(ids));
     delete videos[id];
-    localStorage.setItem("videos", JSON.stringify(videos));
+    window.localStorage.setItem("videos", JSON.stringify(videos));
     setVideoId("");
     event.preventDefault();
   }
 
-  function handleEditName(id, event) {
+  function handleEditName(id: any, event: any) {
     setEditingId(id);
     event.preventDefault();
   }
 
-  function handleSaveName(id, event) {
+  function handleSaveName(id: any, event: any) {
     if (event.key === "Escape") {
       setEditingId("");
       return;
@@ -98,15 +104,17 @@ function App(props: Props) {
       return;
     }
 
+    const videos = JSON.parse(localStorage.getItem("videos") || "{}") || {};
     delete videos[id];
     videos[id] = event.target.value;
-    localStorage.setItem("videos", JSON.stringify(videos));
+    window.localStorage.setItem("videos", JSON.stringify(videos));
 
     setEditingId("");
     event.preventDefault();
   }
 
-  function videoName(id) {
+  function videoName(id: any) {
+    const videos = JSON.parse(localStorage.getItem("videos") || "{}") || {};
     const name = videos[id];
 
     if (name === undefined) {
@@ -116,7 +124,7 @@ function App(props: Props) {
     }
   }
 
-  function handleKeyPress(e) {
+  function handleKeyPress(e: any) {
     if (e.code === "Space") {
       // 1: Playing
       if (player?.getPlayerState() === 1) {
@@ -127,14 +135,20 @@ function App(props: Props) {
     }
   }
 
-  function renderIdList(ids) {
-    const showOrEditId = (id) => {
+  function renderIdList() {
+    if (typeof window === "undefined") {
+      return;
+    }
+
+    const ids = JSON.parse(window.localStorage.getItem("played_ids") || "[]");
+
+    const showOrEditId = (id: any) => {
       if (id === editingId) {
         return (
           <Input
             size="mini"
             defaultValue={videoName(id)}
-            onKeyPress={(e) => handleSaveName(id, e)}
+            onKeyPress={(e: any) => handleSaveName(id, e)}
           />
         );
       } else {
@@ -142,7 +156,7 @@ function App(props: Props) {
           <List.Content
             floated="left"
             as="a"
-            onClick={(e) => handleClickId(id, e)}
+            onClick={(e: any) => handleClickId(id, e)}
           >
             {videoName(id)}
           </List.Content>
@@ -150,7 +164,7 @@ function App(props: Props) {
       }
     };
 
-    const listIds = ids.map((id) => (
+    const listIds = ids.map((id: any) => (
       <List.Item key={id.toString()}>
         {showOrEditId(id)}
         <input name="id" value={id} type="hidden" />
@@ -210,11 +224,11 @@ function App(props: Props) {
         </Grid.Column>
         <Grid.Column width={5}>
           <Header size="medium">History</Header>
-          {renderIdList(ids)}
+          {renderIdList()}
         </Grid.Column>
       </Grid>
     </Container>
   );
-}
+};
 
-export default App;
+export default Home;
