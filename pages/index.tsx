@@ -1,7 +1,6 @@
 import type { NextPage } from "next";
 import { useEffect, useState } from "react";
 import Youtube from "react-youtube";
-import YouTubePlayer from "youtube-player";
 import {
   Container,
   Header,
@@ -13,6 +12,7 @@ import {
   Input,
 } from "semantic-ui-react";
 import RepeatForm from "../components/repeat-form";
+import { YouTubePlayer } from "youtube-player/dist/types";
 
 const Home: NextPage = () => {
   const historyMax = 20;
@@ -20,7 +20,7 @@ const Home: NextPage = () => {
   const [videoId, setVideoId] = useState("");
   const [editingId, setEditingId] = useState("");
 
-  let player: any;
+  let player: YouTubePlayer;
 
   useEffect(() => {
     const ids = JSON.parse(window.localStorage.getItem("played_ids") || "[]");
@@ -32,21 +32,21 @@ const Home: NextPage = () => {
     };
   }, [handleKeyPress]);
 
-  function onVideoEnd(event: any) {
+  function onVideoEnd(event: { target: YouTubePlayer }) {
     event.target.seekTo(0, true);
     event.target.playVideo();
   }
 
-  function onVideoReady(event: any) {
+  function onVideoReady(event: { target: YouTubePlayer }) {
     player = event.target;
   }
 
-  function handleSubmit(values: any) {
-    addToHistory(values["videoId"]);
-    setVideoId(values["videoId"]);
+  function handleSubmit(videoId: string) {
+    addToHistory(videoId);
+    setVideoId(videoId);
   }
 
-  function handleClickId(id: any, event: any) {
+  function handleClickId(id: string, event: MouseEvent) {
     const ids = JSON.parse(window.localStorage.getItem("played_ids") || "[]");
 
     ids.splice(ids.indexOf(id), 1);
@@ -57,7 +57,7 @@ const Home: NextPage = () => {
     event.preventDefault();
   }
 
-  function addToHistory(id: any) {
+  function addToHistory(id: string) {
     const ids = JSON.parse(window.localStorage.getItem("played_ids") || "[]");
 
     if (ids.includes(id)) {
@@ -72,7 +72,7 @@ const Home: NextPage = () => {
     window.localStorage.setItem("played_ids", JSON.stringify(ids));
   }
 
-  function handleDestoryHistory(id: any, event: any) {
+  function handleDestoryHistory(id: string, event: MouseEvent) {
     const ids = JSON.parse(window.localStorage.getItem("played_ids") || "[]");
     const videos = JSON.parse(localStorage.getItem("videos") || "{}") || {};
 
@@ -89,12 +89,12 @@ const Home: NextPage = () => {
     event.preventDefault();
   }
 
-  function handleEditName(id: any, event: any) {
+  function handleEditName(id: string, event: MouseEvent) {
     setEditingId(id);
     event.preventDefault();
   }
 
-  function handleSaveName(id: any, event: any) {
+  function handleSaveName(id: string, event: any) {
     if (event.key === "Escape") {
       setEditingId("");
       return;
@@ -113,7 +113,7 @@ const Home: NextPage = () => {
     event.preventDefault();
   }
 
-  function videoName(id: any) {
+  function videoName(id: string) {
     const videos = JSON.parse(localStorage.getItem("videos") || "{}") || {};
     const name = videos[id];
 
@@ -156,7 +156,7 @@ const Home: NextPage = () => {
           <List.Content
             floated="left"
             as="a"
-            onClick={(e: any) => handleClickId(id, e)}
+            onClick={(e: MouseEvent) => handleClickId(id, e)}
           >
             {videoName(id)}
           </List.Content>

@@ -6,7 +6,7 @@ const RepeatForm = (callback: any) => (
   <Formik
     initialValues={{ videoId: "" }}
     onSubmit={(values, { setSubmitting }) => {
-      callback(values);
+      callback(values["videoId"]);
     }}
   >
     {({ values, handleChange, handleSubmit }) => (
