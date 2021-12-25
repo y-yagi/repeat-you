@@ -1,5 +1,5 @@
 import type { NextPage } from "next";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import Youtube from "react-youtube";
 import {
   Container,
@@ -22,6 +22,17 @@ const Home: NextPage = () => {
 
   let player: YouTubePlayer;
 
+  const handleKeyPress = useCallback((e: any) => {
+    if (e.code === "Space") {
+      // 1: Playing
+      if (player?.getPlayerState() === 1) {
+        player?.pauseVideo();
+      } else {
+        player?.playVideo();
+      }
+    }
+  }, [])
+
   useEffect(() => {
     const ids = JSON.parse(window.localStorage.getItem("played_ids") || "[]");
     setVideoId(ids[0]);
@@ -32,21 +43,21 @@ const Home: NextPage = () => {
     };
   }, [handleKeyPress]);
 
-  function onVideoEnd(event: { target: YouTubePlayer }) {
+  const onVideoEnd = (event: { target: YouTubePlayer }) => {
     event.target.seekTo(0, true);
     event.target.playVideo();
   }
 
-  function onVideoReady(event: { target: YouTubePlayer }) {
+  const onVideoReady = (event: { target: YouTubePlayer }) => {
     player = event.target;
   }
 
-  function handleSubmit(videoId: string) {
+  const handleSubmit = (videoId: string) => {
     addToHistory(videoId);
     setVideoId(videoId);
   }
 
-  function handleClickId(id: string, event: MouseEvent) {
+  const handleClickId = (id: string, event: MouseEvent) => {
     const ids = JSON.parse(window.localStorage.getItem("played_ids") || "[]");
 
     ids.splice(ids.indexOf(id), 1);
@@ -57,7 +68,7 @@ const Home: NextPage = () => {
     event.preventDefault();
   }
 
-  function addToHistory(id: string) {
+  const addToHistory = (id: string) => {
     const ids = JSON.parse(window.localStorage.getItem("played_ids") || "[]");
 
     if (ids.includes(id)) {
@@ -72,7 +83,7 @@ const Home: NextPage = () => {
     window.localStorage.setItem("played_ids", JSON.stringify(ids));
   }
 
-  function handleDestoryHistory(id: string, event: MouseEvent) {
+  const handleDestoryHistory = (id: string, event: MouseEvent) => {
     const ids = JSON.parse(window.localStorage.getItem("played_ids") || "[]");
     const videos = JSON.parse(localStorage.getItem("videos") || "{}") || {};
 
@@ -89,12 +100,12 @@ const Home: NextPage = () => {
     event.preventDefault();
   }
 
-  function handleEditName(id: string, event: MouseEvent) {
+  const handleEditName = (id: string, event: MouseEvent) => {
     setEditingId(id);
     event.preventDefault();
   }
 
-  function handleSaveName(id: string, event: any) {
+  const handleSaveName = (id: string, event: any) => {
     if (event.key === "Escape") {
       setEditingId("");
       return;
@@ -113,7 +124,7 @@ const Home: NextPage = () => {
     event.preventDefault();
   }
 
-  function videoName(id: string) {
+  const videoName = (id: string) => {
     const videos = JSON.parse(localStorage.getItem("videos") || "{}") || {};
     const name = videos[id];
 
@@ -124,18 +135,7 @@ const Home: NextPage = () => {
     }
   }
 
-  function handleKeyPress(e: any) {
-    if (e.code === "Space") {
-      // 1: Playing
-      if (player?.getPlayerState() === 1) {
-        player?.pauseVideo();
-      } else {
-        player?.playVideo();
-      }
-    }
-  }
-
-  function renderIdList() {
+  const renderIdList = () => {
     if (typeof window === "undefined") {
       return;
     }
