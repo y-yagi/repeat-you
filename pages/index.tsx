@@ -22,10 +22,11 @@ const Home: NextPage = () => {
 
   let player: YouTubePlayer;
 
-  const handleKeyPress = useCallback((e: any) => {
+  const handleKeyPress = useCallback(async (e: any) => {
     if (e.code === "Space") {
+      const state = await player?.getPlayerState();
       // 1: Playing
-      if (player?.getPlayerState() === 1) {
+      if (state === 1) {
         player?.pauseVideo();
       } else {
         player?.playVideo();
