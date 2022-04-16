@@ -218,7 +218,7 @@ const Home: NextPage = () => {
                 videoId={videoId}
                 onEnd={onVideoEnd}
                 onReady={onVideoReady}
-                opts={{ playerVars: { autoplay: 1, showinfo: 0 } }}
+                opts={{ playerVars: { autoplay: 1 } }}
               />
             )}
           </div>
