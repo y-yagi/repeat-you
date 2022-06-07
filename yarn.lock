@@ -1506,10 +1506,10 @@ react-popper@^2.2.4:
     react-fast-compare "^3.0.1"
     warning "^4.0.2"
 
-react-youtube@^8.2.1:
-  version "8.2.1"
-  resolved "https://registry.yarnpkg.com/react-youtube/-/react-youtube-8.2.1.tgz#58d84be32a68f474af962396a01b92bff30fd848"
-  integrity sha512-vO/CMh01TMKQ774k4WhtwmWvWpDb+2XpjUiVLvvmHky+Qu0bYDumfzJADG0ZlTRMphfmLmAWoVDta2UXqAeyOg==
+react-youtube@^9.0.2:
+  version "9.0.2"
+  resolved "https://registry.yarnpkg.com/react-youtube/-/react-youtube-9.0.2.tgz#86edf107b5c8537e7e46eb79b1b26f52de728d8b"
+  integrity sha512-qgNXo+axgsWtEqZlesSy+ruV2xaDW2NQFTFx0zqfeA3QyE8QEsyLMuTCF6aC4LyMMf+LsHCSGQw2gTngVkb6NQ==
   dependencies:
     fast-deep-equal "3.1.3"
     prop-types "15.8.1"
