@@ -19,7 +19,7 @@
     "semantic-ui-react": "^2.1.4"
   },
   "devDependencies": {
-    "@types/node": "18.15.11",
+    "@types/node": "18.16.2",
     "@types/react": "18.0.31",
     "@types/youtube-player": "^5.5.7",
     "eslint": "8.37.0",
