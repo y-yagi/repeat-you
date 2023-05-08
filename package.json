@@ -22,7 +22,7 @@
     "@types/node": "20.1.0",
     "@types/react": "18.0.31",
     "@types/youtube-player": "^5.5.7",
-    "eslint": "8.37.0",
+    "eslint": "8.40.0",
     "eslint-config-next": "13.4.1",
     "prettier": "^2.8.7",
     "typescript": "5.0.4"
