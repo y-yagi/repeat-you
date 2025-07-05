@@ -12,7 +12,7 @@ const Export: NextPage = () => {
 
     const ids = encodeURI(window.localStorage.getItem("played_ids") || "[]");
     const videos = encodeURI(window.localStorage.getItem("videos") || "{}");
-    setUrl(`/import?ids=${ids}&videos=${videos}`);
+    setUrl(`${window.location.origin}/import?ids=${ids}&videos=${videos}`);
   };
 
   return (
