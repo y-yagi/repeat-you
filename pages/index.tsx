@@ -1,18 +1,17 @@
 import type { NextPage } from "next";
-import { useEffect, useState, useCallback, SyntheticEvent } from "react";
-import Youtube from "react-youtube";
 import {
-  Container,
-  Header,
-  Icon,
-  Divider,
-  Grid,
-  List,
-  Button,
-  Input,
-} from "semantic-ui-react";
-import RepeatForm from "../components/repeat-form";
+  useEffect,
+  useState,
+  useCallback,
+  SyntheticEvent,
+  useRef,
+  MouseEvent as ReactMouseEvent,
+  KeyboardEvent as ReactKeyboardEvent,
+} from "react";
+import Youtube from "react-youtube";
 import { YouTubePlayer } from "youtube-player/dist/types";
+import AppHeader from "../components/app-header";
+import RepeatForm from "../components/repeat-form";
 
 const Home: NextPage = () => {
   const historyMax = 20;
@@ -20,17 +19,19 @@ const Home: NextPage = () => {
   const [videoId, setVideoId] = useState("");
   const [editingId, setEditingId] = useState("");
 
-  let player: YouTubePlayer;
+  const playerRef = useRef<YouTubePlayer | null>(null);
 
-  const handleKeyPress = useCallback(async (e: any) => {
-    if (e.code === "Space") {
-      const state = await player?.getPlayerState();
-      // 1: Playing
-      if (state === 1) {
-        player?.pauseVideo();
-      } else {
-        player?.playVideo();
-      }
+  const handleKeyPress = useCallback(async (e: KeyboardEvent) => {
+    if (e.code !== "Space") {
+      return;
+    }
+
+    const state = await playerRef.current?.getPlayerState();
+
+    if (state === 1) {
+      playerRef.current?.pauseVideo();
+    } else {
+      playerRef.current?.playVideo();
     }
   }, []);
 
@@ -50,7 +51,7 @@ const Home: NextPage = () => {
   };
 
   const onVideoReady = (event: { target: YouTubePlayer }) => {
-    player = event.target;
+    playerRef.current = event.target;
   };
 
   const handleSubmit = (videoId: string) => {
@@ -58,7 +59,10 @@ const Home: NextPage = () => {
     setVideoId(videoId);
   };
 
-  const handleClickId = (id: string, event: MouseEvent) => {
+  const handleClickId = (
+    id: string,
+    event: ReactMouseEvent<HTMLButtonElement | HTMLAnchorElement>
+  ) => {
     const ids = JSON.parse(window.localStorage.getItem("played_ids") || "[]");
 
     ids.splice(ids.indexOf(id), 1);
@@ -106,7 +110,10 @@ const Home: NextPage = () => {
     event.preventDefault();
   };
 
-  const handleSaveName = (id: string, event: any) => {
+  const handleSaveName = (
+    id: string,
+    event: ReactKeyboardEvent<HTMLInputElement>
+  ) => {
     if (event.key === "Escape") {
       setEditingId("");
       return;
@@ -116,9 +123,9 @@ const Home: NextPage = () => {
       return;
     }
 
-    const videos = JSON.parse(localStorage.getItem("videos") || "{}") || {};
-    delete videos[id];
-    videos[id] = event.target.value;
+  const videos = JSON.parse(localStorage.getItem("videos") || "{}") || {};
+  delete videos[id];
+  videos[id] = event.currentTarget.value;
     window.localStorage.setItem("videos", JSON.stringify(videos));
 
     setEditingId("");
@@ -143,92 +150,98 @@ const Home: NextPage = () => {
 
     const ids = JSON.parse(window.localStorage.getItem("played_ids") || "[]");
 
-    const showOrEditId = (id: any) => {
-      if (id === editingId) {
-        return (
-          <Input
-            size="mini"
-            defaultValue={videoName(id)}
-            onKeyPress={(e: any) => handleSaveName(id, e)}
-          />
-        );
-      } else {
-        return (
-          <List.Content
-            floated="left"
-            as="a"
-            onClick={(e: MouseEvent) => handleClickId(id, e)}
-          >
-            {videoName(id)}
-          </List.Content>
-        );
-      }
-    };
-
-    const listIds = ids.map((id: any) => (
-      <List.Item key={id.toString()}>
-        {showOrEditId(id)}
-        <input name="id" value={id} type="hidden" />
-        <List.Content floated="right">
-          <Button basic color="blue" onClick={(e) => handleEditName(id, e)}>
-            Edit
-          </Button>
-          <Button
-            basic
-            color="green"
-            as="a"
-            href={`https://www.youtube.com/watch?v=${id}`}
-            target="_blank"
-            rel="noreferrer noopener"
-          >
-            Goto
-          </Button>
-          <Button
-            basic
-            color="red"
-            onClick={(e) => handleDestoryHistory(id, e)}
-          >
-            Destroy
-          </Button>
-        </List.Content>
-      </List.Item>
-    ));
+    if (!ids.length) {
+      return <p className="history-empty">No videos saved yet.</p>;
+    }
 
     return (
-      <List divided verticalAlign="middle">
-        {listIds}
-      </List>
+      <ul className="history-list">
+        {ids.map((id: string) => (
+          <li key={id} className="history-row">
+            <div className="history-name">
+              {id === editingId ? (
+                <input
+                  className="history-edit-input"
+                  defaultValue={videoName(id)}
+                  onKeyDown={(e) => handleSaveName(id, e)}
+                  autoFocus
+                />
+              ) : (
+                <button
+                  type="button"
+                  className="link-button"
+                  onClick={(e) => handleClickId(id, e)}
+                >
+                  {videoName(id)}
+                </button>
+              )}
+            </div>
+            <div className="history-actions">
+              <button
+                type="button"
+                className="ghost-button"
+                onClick={(e) => handleEditName(id, e)}
+              >
+                Edit
+              </button>
+              <a
+                className="ghost-button"
+                href={`https://www.youtube.com/watch?v=${id}`}
+                target="_blank"
+                rel="noreferrer noopener"
+              >
+                Goto
+              </a>
+              <button
+                type="button"
+                className="danger-button"
+                onClick={(e) => handleDestoryHistory(id, e)}
+              >
+                Destroy
+              </button>
+            </div>
+          </li>
+        ))}
+      </ul>
     );
   };
 
   return (
-    <Container className="app-container">
-      <Header as="h2" icon textAlign="center" color="teal">
-        <Icon name="play" />
-        <Header.Content>YouTube Repeater</Header.Content>
-      </Header>
-      <Divider hidden section />
-      {RepeatForm(handleSubmit)}
-      <Divider hidden section />
-      <Grid>
-        <Grid.Column width={11}>
-          <div className="ui embed">
-            {videoId && (
+    <main className="page-shell">
+      <AppHeader />
+      <section className="section">
+        <RepeatForm onSubmit={handleSubmit} />
+      </section>
+      <section className="content-grid">
+        <div className="video-panel">
+          <div className="panel-header">
+            <p className="panel-title">Player</p>
+            <p className="panel-hint">Press Space to toggle play/pause</p>
+          </div>
+          <div className="video-frame">
+            {videoId ? (
               <Youtube
                 videoId={videoId}
                 onEnd={onVideoEnd}
                 onReady={onVideoReady}
                 opts={{ playerVars: { autoplay: 1 } }}
               />
+            ) : (
+              <div className="video-placeholder">
+                Enter a video ID to start looping it automatically.
+              </div>
             )}
           </div>
-        </Grid.Column>
-        <Grid.Column width={5}>
-          <Header size="medium">History</Header>
+        </div>
+        <div className="history-panel">
+          <div className="panel-header">
+            <p className="panel-title">History</p>
+            <p className="panel-hint">Saved locally on this device</p>
+          </div>
           {renderIdList()}
-        </Grid.Column>
-      </Grid>
-    </Container>
+        </div>
+      </section>
+    </main>
   );
 };
 
