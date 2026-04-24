@@ -1,46 +1,41 @@
-import type { FC } from "react";
-import { Formik } from "formik";
+import type { FC, FormEvent } from "react";
+import { useState } from "react";
 
 interface RepeatFormProps {
   onSubmit: (videoId: string) => void;
 }
 
-const RepeatForm: FC<RepeatFormProps> = ({ onSubmit }) => (
-  <Formik
-    initialValues={{ videoId: "" }}
-    onSubmit={(values, { setSubmitting, resetForm }) => {
-      const trimmed = values.videoId.trim();
+const RepeatForm: FC<RepeatFormProps> = ({ onSubmit }) => {
+  const [videoId, setVideoId] = useState("");
 
-      if (!trimmed) {
-        setSubmitting(false);
-        return;
-      }
+  const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    const trimmed = videoId.trim();
+    if (!trimmed) return;
+    onSubmit(trimmed);
+    setVideoId("");
+  };
 
-      onSubmit(trimmed);
-      resetForm();
-    }}
-  >
-    {({ values, handleChange, handleSubmit, isSubmitting }) => (
-      <form className="repeat-form" onSubmit={handleSubmit}>
-        <input
-          className="repeat-form__input"
-          name="videoId"
-          placeholder="Enter a YouTube video ID"
-          onChange={handleChange}
-          value={values.videoId}
-          required
-          autoComplete="off"
-        />
-        <button
-          className="primary-button"
-          type="submit"
-          disabled={isSubmitting || values.videoId.trim().length === 0}
-        >
-          Play
-        </button>
-      </form>
-    )}
-  </Formik>
-);
+  return (
+    <form className="repeat-form" onSubmit={handleSubmit}>
+      <input
+        className="repeat-form__input"
+        name="videoId"
+        placeholder="Enter a YouTube video ID"
+        onChange={(e) => setVideoId(e.target.value)}
+        value={videoId}
+        required
+        autoComplete="off"
+      />
+      <button
+        className="primary-button"
+        type="submit"
+        disabled={videoId.trim().length === 0}
+      >
+        Play
+      </button>
+    </form>
+  );
+};
 
 export default RepeatForm;
