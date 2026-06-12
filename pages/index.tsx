@@ -18,6 +18,7 @@ const Home: NextPage = () => {
 
   const [videoId, setVideoId] = useState("");
   const [editingId, setEditingId] = useState("");
+  const [playedIds, setPlayedIds] = useState<string[]>([]);
 
   const playerRef = useRef<YouTubePlayer | null>(null);
 
@@ -37,6 +38,7 @@ const Home: NextPage = () => {
 
   useEffect(() => {
     const ids = JSON.parse(window.localStorage.getItem("played_ids") || "[]");
+    setPlayedIds(ids);
     setVideoId(ids[0]);
 
     document.addEventListener("keydown", handleKeyPress);
@@ -68,6 +70,7 @@ const Home: NextPage = () => {
     ids.splice(ids.indexOf(id), 1);
     ids.unshift(id);
     window.localStorage.setItem("played_ids", JSON.stringify(ids));
+    setPlayedIds([...ids]);
 
     setVideoId(id);
     event.preventDefault();
@@ -86,6 +89,7 @@ const Home: NextPage = () => {
 
     ids.unshift(id);
     window.localStorage.setItem("played_ids", JSON.stringify(ids));
+    setPlayedIds([...ids]);
   };
 
   const handleDestoryHistory = (id: string, event: SyntheticEvent) => {
@@ -101,6 +105,7 @@ const Home: NextPage = () => {
     window.localStorage.setItem("played_ids", JSON.stringify(ids));
     delete videos[id];
     window.localStorage.setItem("videos", JSON.stringify(videos));
+    setPlayedIds([...ids]);
     if (id === videoId) {
       setVideoId("");
     }
@@ -146,19 +151,13 @@ const Home: NextPage = () => {
   };
 
   const renderIdList = () => {
-    if (typeof window === "undefined") {
-      return;
-    }
-
-    const ids = JSON.parse(window.localStorage.getItem("played_ids") || "[]");
-
-    if (!ids.length) {
+    if (!playedIds.length) {
       return <p className="history-empty">No videos saved yet.</p>;
     }
 
     return (
       <ul className="history-list">
-        {ids.map((id: string) => (
+        {playedIds.map((id: string) => (
           <li key={id} className="history-row">
             <div className="history-name">
               {id === editingId ? (
