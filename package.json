@@ -11,13 +11,13 @@
   },
   "dependencies": {
     "next": "16.2.6",
-    "react": "19.2.5",
-    "react-dom": "19.2.5",
+    "react": "19.2.7",
+    "react-dom": "19.2.7",
     "react-youtube": "^10.1.0"
   },
   "devDependencies": {
     "@types/node": "25.6.2",
-    "@types/react": "19.2.14",
+    "@types/react": "19.2.17",
     "@types/youtube-player": "^5.5.11",
     "eslint": "10.4.1",
     "eslint-config-next": "16.2.9",
