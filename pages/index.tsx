@@ -101,7 +101,9 @@ const Home: NextPage = () => {
     window.localStorage.setItem("played_ids", JSON.stringify(ids));
     delete videos[id];
     window.localStorage.setItem("videos", JSON.stringify(videos));
-    setVideoId("");
+    if (id === videoId) {
+      setVideoId("");
+    }
     event.preventDefault();
   };
 
