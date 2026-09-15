@@ -29,5 +29,11 @@
   },
   "volta": {
     "node": "22.18.0"
+  },
+  "pnpm": {
+    "overrides": {
+      "sharp": "^0.35.4",
+      "browserslist": "^4.28.7"
+    }
   }
 }
